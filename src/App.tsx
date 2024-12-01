@@ -18,6 +18,8 @@ function App() {
             element={
               // Initially, I planned to use <ContactDataWrapper> to store all the data within the Provider.
               // However - Plan B, I decided to use hooks instead.
+              // However, 'selectedCharacter' is still in use for sharing across components, 
+              // can refer to the active contact in <ContactRow>          
               <ContactDataWrapper>
                 <Routes>
                   <Route path="" element={<Contacts />} />
@@ -27,7 +29,7 @@ function App() {
             }
           />
         </Routes>
-      </Layout>
+      </Layout >
       <ToastContainer />
     </>
   )

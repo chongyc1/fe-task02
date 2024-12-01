@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useContactData } from "./ContactDataProvider";
 import { Contact } from "../../../types/Contact";
+import cn from "classnames";
 
 const ContactRow = ({ id, name, species, image,
   // gender, status //DEBUG USE
 }: Contact) => {
   const navigate = useNavigate();
-  const { setCharacter } = useContactData();
+  const { setCharacter, selectedChracter } = useContactData();
+
   const handleNavigate = (id: number) => {
     setCharacter(id);
     navigate(`/contact/${id}`);
@@ -14,7 +16,10 @@ const ContactRow = ({ id, name, species, image,
 
   return (
     <div className="group cursor-pointer" onClick={() => handleNavigate(id)} id={`contact-${id}`}>
-      <div className="border border-b-gray-400 px-2 py-3 group-hover:bg-gray-300">
+      <div className={cn('border border-b-gray-400 px-2 py-3', {
+        'group-hover:bg-gray-300': selectedChracter !== id,
+        'bg-blue-300': selectedChracter === id,
+      })}>
         <div className="flex items-center">
           <div>
             <div className="w-[70px] h-[70px] rounded-full overflow-hidden">

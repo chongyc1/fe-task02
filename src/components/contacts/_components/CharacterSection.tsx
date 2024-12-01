@@ -3,15 +3,23 @@ import useGetCharacterDetails from "../../../hooks/useGetCharacterDetails";
 import { Contact } from "../../../types/Contact";
 import { useContactData } from "./ContactDataProvider";
 import { Episode } from "../../../types/Episode";
+import { useNavigate } from "react-router-dom";
 
 const CharacterSection = () => {
-  const { selectedChracter } = useContactData();
+  const { selectedChracter, setCharacter } = useContactData();
   const { loading, data, epis } = useGetCharacterDetails(selectedChracter);
+  const navigate = useNavigate();
+
+  const backToContact = () => {
+    setCharacter(0);
+    navigate('/contact');
+  }
+
 
   return (
     <div className="h-full">
       <div className="flex px-5 py-5 bg-gray-500 border-b border-l h-[155px]">
-        <div className="flex items-center">
+        <div className="flex items-center w-full">
           <div>
             {selectedChracter === 0 ?
               <div className="w-[110px] h-[110px] bg-gray-200 rounded-full" />
@@ -31,6 +39,11 @@ const CharacterSection = () => {
                 {selectedChracter === 0 ? <i>Select Character</i> : loading ? '' : data?.name}
               </h1>
             </div>
+          </div>
+          <div className="absolute right-0 pe-5">
+            <button className="px-3 py-1 bg-white rounded-md hover:bg-gray-200"
+              onClick={() => backToContact()}
+            >Back</button>
           </div>
         </div>
       </div>
