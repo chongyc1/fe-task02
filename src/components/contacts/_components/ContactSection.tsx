@@ -48,13 +48,17 @@ const ContactSection = ({ preloadPage, id }: { preloadPage?: number, id?: string
             value={nameInput} onChange={(e) => setNameInput(e.target.value)}
           />
           <div className="flex gap-x-2">
-            <select value={filter.status} onChange={(e) => setFilterData('status', e.target.value)}>
+            <select value={filter.status} onChange={(e) => setFilterData('status', e.target.value)}
+              className="px-1 py-1 bg-gray-300 hover:bg-gray-400 rounded-md"
+            >
               <option value="">Select Status</option>
               <option value="Alive">Alive</option>
               <option value="Dead">Dead</option>
               <option value="unknown">Unknown</option>
             </select>
-            <select value={filter.gender} onChange={(e) => setFilterData('gender', e.target.value)}>
+            <select value={filter.gender} onChange={(e) => setFilterData('gender', e.target.value)}
+              className="px-1 py-1 bg-gray-300 hover:bg-gray-400 rounded-md"
+            >
               <option value="">Select Gender</option>
               <option value="Female">Female</option>
               <option value="Male">Male</option>
@@ -62,7 +66,8 @@ const ContactSection = ({ preloadPage, id }: { preloadPage?: number, id?: string
               <option value="unknown">Unknown</option>
             </select>
             {searchMode && (
-              <button className="px-3 py-1 bg-white active:bg-gray-700 active:text-white hover:bg-gray-300"
+              <button className="px-3 py-1 rounded-md
+              bg-gray-300 active:bg-gray-700 active:text-white hover:bg-gray-400"
                 onClick={() => setFilterData('clear')}
               >Clear</button>
             )}

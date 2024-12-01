@@ -4,16 +4,18 @@ import { useLocation } from "react-router-dom";
 const NAV = [
   {
     name: "Home",
-    path: '/',
+    path: '',
   },
   {
     name: "Contacts",
-    path: '/contact',
+    path: 'contact',
   },
 ]
 
 const Navbar = () => {
   const location = useLocation();
+  const currentLocation = location.pathname.split('/')[1];
+
   return (
     <div className="bg-gray-500 h-full flex flex-col items-center">
       <div>
@@ -24,7 +26,7 @@ const Navbar = () => {
           <Link
             key={nav.path}
             className={`border rounded-md px-4 py-2 text-center 
-              ${location.pathname === nav.path ? 'bg-gray-300 pointer-events-none' : ''}`
+              ${currentLocation === nav.path ? 'bg-gray-300 pointer-events-none' : ''}`
             } to={nav.path}
           >
             {nav.name}
