@@ -31,14 +31,22 @@ const useGetContactsList = (preloadPage?: number): useGetContactsListReturn => {
 
   const [searchMode, setSearchMode] = useState(false);
 
-  const setFilterData = (type: FilterType, value?: string) => {
-    if (type === 'clear') {
+  const resetData = () => {
+    setContactList([]);
+    setTimeout(() => {
+      setPage(1);
       setSearchMode(false);
       setFilter({
         name: "",
         status: "",
         gender: "",
       });
+    }, 100);
+  }
+
+  const setFilterData = (type: FilterType, value?: string) => {
+    if (type === 'clear') {
+      resetData();
       return;
     }
     if (!searchMode) setPage(1);

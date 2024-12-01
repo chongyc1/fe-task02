@@ -23,18 +23,25 @@ const ContactSection = ({ preloadPage, id }: { preloadPage?: number, id?: string
     }
   }
 
-  const [nameInput, setNameInput] = useState<string | undefined>();
-  useEffect(() => {
-    let delayTyping: number | undefined;
-    if (nameInput !== undefined) {
-      delayTyping = setTimeout(() => {
-        setFilterData('name', nameInput);
-      }, 800);
-    }
 
-    return () => clearTimeout(delayTyping);
+
+  const [inputValue, setInputValue] = useState<string | undefined>();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (inputValue !== undefined) {
+        setFilterData('name', inputValue);
+      }
+    }, 800);
+
+    // Cleanup the timer if inputValue changes before 500ms
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nameInput]);
+  }, [inputValue]);
+  const clearFilter = () => {
+    setInputValue(undefined);
+    setFilterData('clear');
+  }
 
 
   useScrollToContact(id, loading, preloadPage);
@@ -45,7 +52,7 @@ const ContactSection = ({ preloadPage, id }: { preloadPage?: number, id?: string
         <div className="flex flex-col gap-y-3">
           <h3 className="font-semibold text-lg">Contact</h3>
           <input className="w-full bg-transparent border px-2 py-2" placeholder="Search Chracters"
-            value={nameInput} onChange={(e) => setNameInput(e.target.value)}
+            value={inputValue === undefined ? '' : inputValue} onChange={(e) => setInputValue(e.target.value)}
           />
           <div className="flex gap-x-2">
             <select value={filter.status} onChange={(e) => setFilterData('status', e.target.value)}
@@ -68,7 +75,7 @@ const ContactSection = ({ preloadPage, id }: { preloadPage?: number, id?: string
             {searchMode && (
               <button className="px-3 py-1 rounded-md
               bg-gray-300 active:bg-gray-700 active:text-white hover:bg-gray-400"
-                onClick={() => setFilterData('clear')}
+                onClick={() => clearFilter()}
               >Clear</button>
             )}
           </div>
