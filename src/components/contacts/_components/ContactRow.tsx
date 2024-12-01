@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useContactData } from "./ContactDataProvider";
-import { Contact } from "../../../hooks/useGetContactsList";
+import { Contact } from "../../../types/Contact";
 
-const ContactRow = ({ id, name, species, image }: Contact) => {
+const ContactRow = ({ id, name, species, image,
+  // gender, status //DEBUG USE
+}: Contact) => {
   const navigate = useNavigate();
   const { setCharacter } = useContactData();
   const handleNavigate = (id: number) => {
@@ -11,7 +13,7 @@ const ContactRow = ({ id, name, species, image }: Contact) => {
   }
 
   return (
-    <div className="group cursor-pointer" onClick={() => handleNavigate(id)}>
+    <div className="group cursor-pointer" onClick={() => handleNavigate(id)} id={`contact-${id}`}>
       <div className="border border-b-gray-400 px-2 py-3 group-hover:bg-gray-300">
         <div className="flex items-center">
           <div>

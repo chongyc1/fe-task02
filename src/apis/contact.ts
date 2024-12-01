@@ -15,19 +15,18 @@ export const getContactList = (
       name,
       status,
       gender,
-      limit: 100,
     }
   },
 ).then((response) => {
   return response
 }).catch((error) => {
-  return error
+  return error;
 });
 
 
-export const getContactDetail = (id: string) => axios.get(`https://rickandmortyapi.com/api/character/${id}`
+export const getCharacterDetails = (id: number) => axios.get(`https://rickandmortyapi.com/api/character/${id}`
 ).then((response) => {
-  return response
+  return response;
 }).catch((error) => {
-  return error
+  return error;
 });

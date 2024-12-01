@@ -16,6 +16,8 @@ function App() {
           <Route
             path="/contact/*"
             element={
+              // Initially, I planned to use <ContactDataWrapper> to store all the data within the Provider.
+              // However - Plan B, I decided to use hooks instead.
               <ContactDataWrapper>
                 <Routes>
                   <Route path="" element={<Contacts />} />

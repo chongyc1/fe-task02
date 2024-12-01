@@ -3,7 +3,7 @@ import CharacterSection from "../contacts/_components/CharacterSection"
 import ContactSection from "../contacts/_components/ContactSection"
 import { useNavigate, useParams } from "react-router-dom"
 import { useContactData } from "../contacts/_components/ContactDataProvider"
-import { getContactDetail } from "../../apis/contact"
+import { getCharacterDetails } from "../../apis/contact"
 import { toast } from 'react-toastify';
 
 const Character = () => {
@@ -12,15 +12,16 @@ const Character = () => {
   const { setCharacter } = useContactData();
   const navigate = useNavigate();
 
+  const [preloadPage, sePreloadPage] = useState(1);
+
   useEffect(() => {
     const checkIsCharacterExist = async (id: string) => {
       try {
-        const ret = await getContactDetail(id);
+        const ret = await getCharacterDetails(parseInt(id));
         if (ret.status === 200) {
           setLoading(false);
-          console.log(ret);
         } else {
-          toast('Character not found', { type: 'error' });
+          toast.error('Invalid character');
           navigate('/contact');
         }
       } catch (error) {
@@ -30,6 +31,10 @@ const Character = () => {
     }
 
     if (id) {
+      const contactPage = Math.ceil(parseInt(id) / 20);
+      if (contactPage !== 1) {
+        sePreloadPage(contactPage);
+      }
       checkIsCharacterExist(id);
       setCharacter(parseInt(id));
     }
@@ -45,7 +50,7 @@ const Character = () => {
   return (
     <div className="flex h-full border-l-2">
       <div className="w-2/6 bg-gray-500">
-        <ContactSection />
+        <ContactSection preloadPage={preloadPage} id={id} />
       </div>
       <div className="w-4/6">
         <CharacterSection />
