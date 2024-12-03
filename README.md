@@ -29,9 +29,9 @@ Deployed by Vercel <br />
 https://fe-task02.vercel.app/
 
 ## Technology / Library Used
-- React (Typescript)
+- React 18 (Typescript)
 - Vite
-- React Router Dom
+- React Router Dom v6
 - Axios
 - Tailwind CSS
 
