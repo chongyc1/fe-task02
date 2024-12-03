@@ -8,6 +8,8 @@ by Yc <br />
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [Directroy Structure](#directory-structure)
+  - [Folder Description](#folder-description)
+  - [Components Structure Design](#components-structure-design)
 - [Usage](#usage)
   - [Router](#router-component)
   - [Layout / Navbar](#layout-and-navbar-component)
@@ -85,6 +87,37 @@ npm run build
 │   ├── main.tsx          # Entry point of the app
 │   └── ...
 └── README.md             
+```
+### Folder Description
+Below is an overview of the structure:
+- `apis`: Handling API requests
+- `components`: Resuable UI components used accross the whole application/project.
+- `hooks`: Custom React hooks for the application.
+- `types`: TypeScript type definitions to ensure type safety.
+
+
+### Components Structure Design
+
+All new components are organized within the `src/components` directory. Below is an overview of the structure:
+- `index.tsx`: The main entry point for the component.
+ 
+- `_components`: A folder that contains sub-components, which are smaller, reusable parts of the main component.
+
+
+```bash
+.
+├── 📁 src/               
+│   ├── ...
+│   ├── 📁 components/    
+│       │
+│       ├── 📁 new-components/ 
+│       │   ├── 📁 _components_/  
+│       │   └── index.tsx   
+│       │
+│       ├── 📁 new2-components/ 
+│           ├── 📁 _components_/  
+│           └── index.tsx
+└── ...
 ```
 
 ## Usage
