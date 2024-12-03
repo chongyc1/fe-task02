@@ -1,6 +1,6 @@
-import axios from "axios";
+import { instance } from "./base";
 
-export const getEpisodeList = (episodes: string) => axios.get(`https://rickandmortyapi.com/api/episode/${episodes}`,
+export const getEpisodeList = (episodes: string) => instance.get(`episode/${episodes}`,
   {
     params: {
     }

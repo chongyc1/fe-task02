@@ -3,7 +3,15 @@ import { getContactList } from "../apis/contact";
 import { toast } from "react-toastify";
 import { Contact } from "../types/Contact";
 
-type FilterType = 'name' | 'status' | 'gender' | 'clear';
+export type FilterType = 'name' | 'status' | 'gender' | 'clear';
+type FilterState = {
+  name: string;
+  status: string;
+  gender: string;
+};
+
+const INITIAL_FILTER: FilterState = { name: "", status: "", gender: "" };
+
 type useGetContactsListReturn = {
   data: Contact[];
   loading: boolean;
@@ -20,40 +28,30 @@ const useGetContactsList = (preloadPage?: number): useGetContactsListReturn => {
   const [page, setPage] = useState(preloadPage ? preloadPage : 1);
   const [maxPage, setMaxPage] = useState(1);
   const [contactList, setContactList] = useState<Contact[]>([]);
-
   const [initPreload, setInitPreload] = useState(false);
-
-  const [filter, setFilter] = useState({
-    name: "",
-    status: "",
-    gender: "",
-  })
-
+  const [filter, setFilter] = useState(INITIAL_FILTER);
   const [searchMode, setSearchMode] = useState(false);
 
   const resetData = () => {
     setContactList([]);
+    //delay to prevent data won't go to page 1
     setTimeout(() => {
       setPage(1);
       setSearchMode(false);
-      setFilter({
-        name: "",
-        status: "",
-        gender: "",
-      });
+      setFilter(INITIAL_FILTER);
     }, 100);
   }
 
   const setFilterData = (type: FilterType, value?: string) => {
     if (type === 'clear') {
       resetData();
-      return;
+    } else {
+      setFilter((prevFilter) => ({
+        ...prevFilter,
+        [type]: value,
+      }));
+      if (!searchMode) setPage(1);
     }
-    if (!searchMode) setPage(1);
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      [type]: value,
-    }))
   }
 
   useEffect(() => {
@@ -65,68 +63,61 @@ const useGetContactsList = (preloadPage?: number): useGetContactsListReturn => {
     } else {
       setSearchMode(false);
     }
-  }, [filter])
+  }, [filter]);
+
+
+  // get contact list
+  const getContact = async (signal: AbortSignal) => {
+    setLoading(true);
+    try {
+      const ret = await getContactList(page, filter.name, filter.status, filter.gender, signal);
+      if (ret.status === 200) {
+        setMaxPage(ret.data.info.pages);
+        const data = Array.isArray(ret.data?.results) ? ret.data.results : [];
+        setContactList((prev) =>
+          searchMode && page === 1 ? data : [...prev, ...data]
+        );
+      } else {
+        console.log('ERROR', ret.response?.data?.error);
+        setContactList([]);
+      }
+    } catch (e) {
+      console.log('UNEXPECTED ERROR', e);
+      toast.error('Unexpected error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // preload contact list
+  const preLoadContact = async (preloadPage: number, signal: AbortSignal) => {
+    setLoading(true);
+    try {
+      const contacts: Contact[] | ((prevState: Contact[]) => Contact[]) = [];
+      for (let loadPage = 0; loadPage < preloadPage; loadPage++) {
+        const ret = await getContactList(loadPage + 1, filter.name, filter.status, filter.gender, signal);
+        if (ret.status === 200) {
+          setMaxPage(ret.data.info.pages);
+          contacts.push(...ret.data.results);
+        }
+      }
+      setContactList(contacts);
+      setInitPreload(true);
+    } catch (e) {
+      console.log('UNEXPECTED ERROR-', e);
+      toast.error('Unexpected error-');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
-
-    const getContact = async () => {
-      setLoading(true);
-      try {
-        const ret = await getContactList(page, filter.name, filter.status, filter.gender, signal);
-        if (ret.status === 200) {
-          setMaxPage(ret.data.info.pages);
-          const data = Array.isArray(ret.data?.results) ? ret.data.results : [];
-          setLoading(false);
-          if (searchMode && page === 1) {
-            setContactList(data);
-          } else {
-            setContactList((prevList) => [...prevList, ...data]);
-          }
-          //get data
-        } else {
-          if (ret.code === "ERR_CANCELED") {
-            //continue loading
-          } else {
-            console.log('ERROR', ret.response?.data?.error);
-            // other error
-          }
-          setContactList([]);
-          setLoading(false);
-        }
-      } catch (e) {
-        console.log('UNEXPECTED ERROR', e);
-        toast.error('Unexpected error');
-        setLoading(false);
-      }
-    };
-
-    const preLoadContact = async (preloadPage: number) => {
-      setLoading(true);
-      try {
-        const contacts: Contact[] | ((prevState: Contact[]) => Contact[]) = [];
-        for (let loadPage = 0; loadPage < preloadPage; loadPage++) {
-          const ret = await getContactList(loadPage + 1, filter.name, filter.status, filter.gender, signal);
-          if (ret.status === 200) {
-            setMaxPage(ret.data.info.pages);
-            contacts.push(...ret.data.results);
-          }
-        }
-        setContactList(contacts);
-        setInitPreload(true);
-        setLoading(false);
-      } catch (e) {
-        console.log('UNEXPECTED ERROR-', e);
-        toast.error('Unexpected error-');
-        setLoading(false);
-      }
-    }
-
     if (preloadPage !== undefined && preloadPage !== 1 && !initPreload) {
-      preLoadContact(preloadPage);
+      preLoadContact(preloadPage, signal);
     } else {
-      getContact();
+      getContact(signal);
     }
 
     return () => {
@@ -134,15 +125,16 @@ const useGetContactsList = (preloadPage?: number): useGetContactsListReturn => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, filter, searchMode, preloadPage]);
+
   return {
     data: contactList,
     loading,
     page,
     maxPage,
     filter,
-    searchMode: searchMode,
-    setPage: setPage,
-    setFilterData: setFilterData,
+    searchMode,
+    setPage,
+    setFilterData,
   }
 }
 

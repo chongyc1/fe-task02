@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import CharacterSection from "../contacts/_components/CharacterSection"
+import CharacterSection from "./_components/CharacterSection"
 import ContactSection from "../contacts/_components/ContactSection"
 import { useNavigate, useParams } from "react-router-dom"
 import { useContactData } from "../contacts/_components/ContactDataProvider"

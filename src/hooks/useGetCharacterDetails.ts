@@ -7,35 +7,35 @@ import { Episode } from "../types/Episode";
 type useGetCharacterDetailsReturn = {
   loading: boolean;
   data?: Contact;
-  epis: Episode[];
+  episodes: Episode[];
+}
+
+const processEpisode = async (episodes: string[]) => {
+  const allEpList = Array.isArray(episodes) ? episodes : [];
+  const allEps = allEpList.map((ep: string) => ep.replace('https://rickandmortyapi.com/api/episode/', '')).join(',');
+  const ret = await getEpisodeList(allEps);
+  if (ret.status === 200) {
+    return Array.isArray(ret.data) ? ret.data : [{ ...ret.data }];
+  }
+  return [];
 }
 
 const useGetCharacterDetails = (id: number): useGetCharacterDetailsReturn => {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Contact>();
-  const [epis, setEpis] = useState<Episode[]>([]);
-
-  const processEpisode = async (episodes: string[]) => {
-    const allEpList = Array.isArray(episodes) ? episodes : [];
-    const allEps = allEpList.map((ep: string) => ep.replace('https://rickandmortyapi.com/api/episode/', '')).join(',');
-    const ret = await getEpisodeList(allEps);
-    if (ret.status === 200) {
-      return Array.isArray(ret.data) ? ret.data : [{...ret.data}];
-    }
-    return [];
-  }
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   useEffect(() => {
     const getCharacter = async () => {
       setLoading(true);
-      setEpis([]);
+      setEpisodes([]);
       try {
         const ret = await getCharacterDetails(id);
         if (ret.status === 200) {
           setData(ret.data);
           const proceesedEpisode = await processEpisode(ret.data.episode);
-          setEpis(proceesedEpisode);
+          setEpisodes(proceesedEpisode);
         } else {
           setData(undefined);
           console.log('Invalid character');
@@ -52,7 +52,7 @@ const useGetCharacterDetails = (id: number): useGetCharacterDetailsReturn => {
   return {
     loading,
     data,
-    epis,
+    episodes,
   }
 }
 
