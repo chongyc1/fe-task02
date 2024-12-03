@@ -111,11 +111,11 @@ All new components are organized within the `src/components` directory. Below is
 │   ├── 📁 components/    
 │       │
 │       ├── 📁 new-components/ 
-│       │   ├── 📁 _components_/  
+│       │   ├── 📁 _components/  
 │       │   └── index.tsx   
 │       │
 │       ├── 📁 new2-components/ 
-│           ├── 📁 _components_/  
+│           ├── 📁 _components/  
 │           └── index.tsx
 └── ...
 ```
