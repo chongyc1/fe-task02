@@ -3,7 +3,7 @@ Rick and Morty API <br />
 by Yc <br />
 
 ## Table of Content
-- [Production/Demo Link](#production-link)
+- [Production/Demo Link](#productiondemo-link)
 - [Technology / Library Used](#technology--library-used)
 - [Features](#features)
 - [Getting Started](#getting-started)
