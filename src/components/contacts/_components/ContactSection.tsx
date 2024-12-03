@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import cn from "classnames";
 import useGetContactsList from "../../../hooks/useGetContactsList";
-import useScrollToContact from "../../../hooks/useScrollToCharacterRow";
+import useScrollToContact from "../../../hooks/useScrollToContact";
 import ContactRow from "./ContactRow";
 import ContactFilterSection from "./ContactFilterSection";
 import useDebounced from "../../../hooks/useDebounced";
